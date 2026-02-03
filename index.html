@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Would You Be❤️</title>
+<title>Would You Be ❤️</title>
 
 <style>
 * { box-sizing: border-box; }
@@ -38,8 +38,35 @@ body::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.6));
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0.35),
+    rgba(0,0,0,0.6)
+  );
   z-index: -1;
+}
+
+/* ===== BLUR BEFORE START ===== */
+body.blurred .page {
+  filter: blur(8px);
+  transform: scale(1.03);
+}
+
+.page {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 
+    opacity 1s ease,
+    filter 0.8s ease,
+    transform 0.8s ease;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Tap to start overlay */
@@ -52,6 +79,7 @@ body::after {
   justify-content: center;
   z-index: 999;
   cursor: pointer;
+  transition: opacity 0.8s ease;
 }
 
 .start-text {
@@ -59,21 +87,7 @@ body::after {
   animation: pulse 1.5s infinite;
 }
 
-/* Pages */
-.page {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 1s ease;
-}
-
-.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
+/* Card */
 .card {
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(6px);
@@ -138,6 +152,7 @@ button {
   animation: floatUp 6s linear infinite;
 }
 
+/* Animations */
 @keyframes floatUp {
   from { transform: translateY(0); opacity: 1; }
   to { transform: translateY(-110vh); opacity: 0; }
@@ -162,7 +177,7 @@ button {
 </style>
 </head>
 
-<body>
+<body class="blurred">
 
 <!-- TAP TO START -->
 <div id="start-overlay">
@@ -199,7 +214,7 @@ button {
 <div class="hearts" id="hearts"></div>
 
 <!-- MUSIC -->
-<audio id="bg-music" loop>
+<audio id="bg-music" preload="auto" loop playsinline>
   <source src="Dave - Raindance (ft. Tems).mp3" type="audio/mpeg" />
 </audio>
 
@@ -207,11 +222,16 @@ button {
 const music = document.getElementById("bg-music");
 const overlay = document.getElementById("start-overlay");
 
-/* Start music on tap */
-overlay.addEventListener("click", () => {
-  music.play();
-  overlay.style.opacity = "0";
-  setTimeout(() => overlay.remove(), 800);
+/* Start experience */
+overlay.addEventListener("click", async () => {
+  try {
+    await music.play();
+    document.body.classList.remove("blurred");
+    overlay.style.opacity = "0";
+    setTimeout(() => overlay.remove(), 800);
+  } catch (e) {
+    console.error("Music error:", e);
+  }
 });
 
 /* YES */
